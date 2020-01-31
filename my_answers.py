@@ -95,6 +95,7 @@ class NeuralNetwork(object):
         #### Implement the backward pass here ####
         ### Backward pass ###
         # taking the derivative at each piece
+        # READ: Lesson 2 exercise, Implementing Backpropagation
         # TODO: Output error - Replace this value with your calculations.
         # y - y_hat
         error = y - final_outputs # Output layer error is the difference between desired target and actual output.
@@ -107,15 +108,14 @@ class NeuralNetwork(object):
         # ERROR = (y − 𝑦̂) * 𝜎′(𝑥) : sigmoid_prime(x) is equivalent to sigmoid(x)*(1-sigmoid(x))
         # from forward_pass sigmoid(x) is the hidden_outputs
         # BASED on Lesson 2, backpropagation
-        output_gradient = final_outputs * (1 - final_outputs)
+        output_gradient = final_outputs * (1 - final_outputs) # aka sigmoid_prime
         output_error_term = error * output_gradient
         
-        hidden_gradient = hidden_outputs * (1 - hidden_outputs) # aka sigmoid_prime
-        
+        hidden_gradient = hidden_outputs * (1 - hidden_outputs) # aka sigmoid_prime        
         hidden_error_term = hidden_error * hidden_gradient
         
         # Weight step (input to hidden)
-        delta_weights_i_h += hidden_error_term * X[:, None]
+        delta_weights_i_h += hidden_error_term * X[:, None] # X into column vector
         # Weight step (hidden to output)
         delta_weights_h_o += output_error_term * hidden_outputs
         return delta_weights_i_h, delta_weights_h_o
@@ -130,8 +130,9 @@ class NeuralNetwork(object):
             n_records: number of records
 
         '''
-        self.weights_hidden_to_output += None # update hidden-to-output weights with gradient descent step
-        self.weights_input_to_hidden += None # update input-to-hidden weights with gradient descent step
+        #  READ: Lesson 2 exercise, Implementing Backpropagation
+        self.weights_hidden_to_output += self.lr * delta_weights_h_o / n_records # update hidden-to-output weights with gradient descent step
+        self.weights_input_to_hidden += self.lr * delta_weights_i_h / n_records # update input-to-hidden weights with gradient descent step
 
     def run(self, features):
         ''' Run a forward pass through the network with input features 
