@@ -78,7 +78,7 @@ class NeuralNetwork(object):
         # step 1, apply matrix multiplaction
         final_inputs = np.dot(hidden_outputs, self.weights_hidden_to_output) # signals into final output layer
         #final_outputs = self.activation_function(final_inputs) # signals from final output layer
-        final_outputs = final_inputs
+        final_outputs = final_inputs # activation function of the output node is f(x)=x instead of sigmoid
         
         return final_outputs, hidden_outputs # respectively, prediction, sigmoid(hidden_inputs)
 
@@ -151,7 +151,7 @@ class NeuralNetwork(object):
         # TODO: Output layer - Replace these values with the appropriate calculations.
         final_inputs = np.dot(hidden_outputs, self.weights_hidden_to_output) # signals into final output layer
         #final_outputs = self.activation_function(final_inputs) # signals from final output layer 
-        final_outputs = final_inputs
+        final_outputs = final_inputs # activation function of the output node is f(x)=x instead of sigmoid
         
         return final_outputs
 
@@ -159,7 +159,7 @@ class NeuralNetwork(object):
 #########################################################
 # Set your hyperparameters here
 ##########################################################
-iterations = 100
-learning_rate = 0.1
-hidden_nodes = 2
+iterations = 8000
+learning_rate = 0.2
+hidden_nodes = 15
 output_nodes = 1
