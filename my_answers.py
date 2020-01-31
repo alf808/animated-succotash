@@ -9,9 +9,11 @@ class NeuralNetwork(object):
         self.output_nodes = output_nodes
 
         # Initialize weights
+        # the weights below will be initially multiplied to vector X for forward_pass
         self.weights_input_to_hidden = np.random.normal(0.0, self.input_nodes**-0.5, 
                                        (self.input_nodes, self.hidden_nodes))
-
+        
+        # the weights below will be used for input to hidden layer's contribution to error
         self.weights_hidden_to_output = np.random.normal(0.0, self.hidden_nodes**-0.5, 
                                        (self.hidden_nodes, self.output_nodes))
         self.lr = learning_rate
@@ -37,6 +39,16 @@ class NeuralNetwork(object):
         n_records = features.shape[0]
         delta_weights_i_h = np.zeros(self.weights_input_to_hidden.shape)
         delta_weights_h_o = np.zeros(self.weights_hidden_to_output.shape)
+        
+        # training neural network steps (including backpropagation):
+        # Doing a feedforward operation. (composing a series of functions)
+        # Comparing the output of the model with the desired output.
+        # Calculating the error.
+        # Running the feedforward operation backwards (backpropagation) to spread the error to each of the weights.
+        ## backpropagation is taking the derivative at each piece
+        # Use this to update the weights, and get a better model.
+        # Continue this until we have a model that is good.
+        
         for X, y in zip(features, targets):
             
             final_outputs, hidden_outputs = self.forward_pass_train(X)  # Implement the forward pass function below
@@ -57,8 +69,11 @@ class NeuralNetwork(object):
         #### Implement the forward pass here ####
         ### Forward pass ###
         # TODO: Hidden layer - Replace these values with your calculations.
-        hidden_inputs = None # signals into hidden layer
-        hidden_outputs = None # signals from hidden layer
+        # prediction is a combination of matrix multiplications and sigmoid functions
+        # step 1, apply matrix multiplication
+        hidden_inputs = np.dot(X, self.weights_input_to_hidden) # signals into hidden layer
+        # step 2, apply sigmoid function which is the self.activation_function above
+        hidden_outputs =  self.activation_function(hidden_inputs) # signals from hidden layer
 
         # TODO: Output layer - Replace these values with your calculations.
         final_inputs = None # signals into final output layer
@@ -79,14 +94,16 @@ class NeuralNetwork(object):
         '''
         #### Implement the backward pass here ####
         ### Backward pass ###
-
+        # taking the derivative at each piece
         # TODO: Output error - Replace this value with your calculations.
-        error = None # Output layer error is the difference between desired target and actual output.
+        error = y - final_outputs # Output layer error is the difference between desired target and actual output.
         
         # TODO: Calculate the hidden layer's contribution to the error
-        hidden_error = None
+        # matrix multiplication of error and weights
+        hidden_error = np.dot(error, self.weights_hidden_to_output)
         
         # TODO: Backpropagated error terms - Replace these values with your calculations.
+        # (𝑦−𝑦̂ )𝜎′(𝑥) : sigmoid_prime(x) is
         output_error_term = None
         
         hidden_error_term = None
