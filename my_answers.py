@@ -20,9 +20,8 @@ class NeuralNetwork(object):
         
         #### TODO: Set self.activation_function to your implemented sigmoid function ####
         #
-        #
         def sigmoid(x):
-            return 1 / (1 + np.exp(-x))  # Replace 0 with your sigmoid calculation here
+            return 1 / (1 + np.exp(-x))
         self.activation_function = sigmoid
                     
 
@@ -70,23 +69,24 @@ class NeuralNetwork(object):
         ### Forward pass ###
         # TODO: Hidden layer - Replace these values with your calculations.
         # prediction is a combination of matrix multiplications and sigmoid functions
-        # step 1, apply matrix multiplication
+        # step 1, apply matrix multiplication (see lesson 2, multilayer perceptrons)
         hidden_inputs = np.dot(X, self.weights_input_to_hidden) # signals into hidden layer
         # step 2, apply sigmoid function which is the self.activation_function above
         hidden_outputs =  self.activation_function(hidden_inputs) # signals from hidden layer
 
         # TODO: Output layer - Replace these values with your calculations.
-        final_inputs = None # signals into final output layer
-        final_outputs = None # signals from final output layer
+        # step 1, apply matrix multiplaction
+        final_inputs = np.dot(hidden_outputs, self.weights_hidden_to_output) # signals into final output layer
+        final_outputs = self.activation_function(final_inputs) # signals from final output layer
         
-        return final_outputs, hidden_outputs
+        return final_outputs, hidden_outputs # respectively, prediction, sigmoid(x)
 
     def backpropagation(self, final_outputs, hidden_outputs, X, y, delta_weights_i_h, delta_weights_h_o):
-        ''' Implement backpropagation
+        ''' Implement backpropagation 
          
             Arguments
             ---------
-            final_outputs: output from forward pass
+            final_outputs: output from forward pass (prediction)
             y: target (i.e. label) batch
             delta_weights_i_h: change in weights from input to hidden layers
             delta_weights_h_o: change in weights from hidden to output layers
@@ -96,6 +96,7 @@ class NeuralNetwork(object):
         ### Backward pass ###
         # taking the derivative at each piece
         # TODO: Output error - Replace this value with your calculations.
+        # y - y_hat
         error = y - final_outputs # Output layer error is the difference between desired target and actual output.
         
         # TODO: Calculate the hidden layer's contribution to the error
@@ -103,10 +104,13 @@ class NeuralNetwork(object):
         hidden_error = np.dot(error, self.weights_hidden_to_output)
         
         # TODO: Backpropagated error terms - Replace these values with your calculations.
-        # (𝑦−𝑦̂ )𝜎′(𝑥) : sigmoid_prime(x) is
+        # ERROR = (y − 𝑦̂) * 𝜎′(𝑥) : sigmoid_prime(x) is equivalent to sigmoid(x)*(1-sigmoid(x))
+        # from forward_pass sigmoid(x) is the hidden_outputs
         output_error_term = None
         
-        hidden_error_term = None
+        output_gradient = hidden_outputs * (1 - hidden_outputs) # aka sigmoid_prime
+        
+        hidden_error_term = hidden_error * output_gradient
         
         # Weight step (input to hidden)
         delta_weights_i_h += None
