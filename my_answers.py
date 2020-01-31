@@ -79,7 +79,7 @@ class NeuralNetwork(object):
         final_inputs = np.dot(hidden_outputs, self.weights_hidden_to_output) # signals into final output layer
         final_outputs = self.activation_function(final_inputs) # signals from final output layer
         
-        return final_outputs, hidden_outputs # respectively, prediction, sigmoid(x)
+        return final_outputs, hidden_outputs # respectively, prediction, sigmoid(hidden_inputs)
 
     def backpropagation(self, final_outputs, hidden_outputs, X, y, delta_weights_i_h, delta_weights_h_o):
         ''' Implement backpropagation 
@@ -106,16 +106,18 @@ class NeuralNetwork(object):
         # TODO: Backpropagated error terms - Replace these values with your calculations.
         # ERROR = (y − 𝑦̂) * 𝜎′(𝑥) : sigmoid_prime(x) is equivalent to sigmoid(x)*(1-sigmoid(x))
         # from forward_pass sigmoid(x) is the hidden_outputs
-        output_error_term = None
+        # BASED on Lesson 2, backpropagation
+        output_gradient = final_outputs * (1 - final_outputs)
+        output_error_term = error * output_gradient
         
-        output_gradient = hidden_outputs * (1 - hidden_outputs) # aka sigmoid_prime
+        hidden_gradient = hidden_outputs * (1 - hidden_outputs) # aka sigmoid_prime
         
-        hidden_error_term = hidden_error * output_gradient
+        hidden_error_term = hidden_error * hidden_gradient
         
         # Weight step (input to hidden)
-        delta_weights_i_h += None
+        delta_weights_i_h += hidden_error_term * X[:, None]
         # Weight step (hidden to output)
-        delta_weights_h_o += None
+        delta_weights_h_o += output_error_term * hidden_outputs
         return delta_weights_i_h, delta_weights_h_o
 
     def update_weights(self, delta_weights_i_h, delta_weights_h_o, n_records):
